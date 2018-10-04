@@ -12,5 +12,6 @@ public interface DealerService {
 	Optional<DealerModel> getDealerDetailById(Long id);
 	
 	void addDealer(DealerModel dealer);
+	void deleteDealer(long dealerId);
 
 }

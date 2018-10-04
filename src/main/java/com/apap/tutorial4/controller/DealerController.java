@@ -49,4 +49,13 @@ public class DealerController {
 		model.addAttribute("dealer", archive);
 		return "view-dealer";
 	}
+	
+	
+	@RequestMapping(value = "/dealer/delete/{dealerId}", method = RequestMethod.GET)
+	private String deleteDealer(
+			@PathVariable(value = "dealerId") Long dealerId
+			) {
+		dealerService.deleteDealer(dealerId);
+		return "deleteCar";
+	}
 }
