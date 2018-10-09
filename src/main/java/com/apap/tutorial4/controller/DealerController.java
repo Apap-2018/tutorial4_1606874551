@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.apap.tutorial4.model.CarModel;
 import com.apap.tutorial4.model.DealerModel;
 import com.apap.tutorial4.repository.DealerDb;
 import com.apap.tutorial4.service.CarService;
@@ -47,19 +48,22 @@ public class DealerController {
 	}
 	
 	@RequestMapping(value = "/dealer/view", method = RequestMethod.GET)
-	public String viewDealer(@RequestParam ("dealerId") long dealerId, Model model) {
-		DealerModel archive = dealerService.getDealerDetailById(dealerId).get();
+	public String viewDealer(String dealerId, Model model) {
+		
+		Long id = Long.parseLong(dealerId);
+		DealerModel archive = dealerService.getDealerDetailById(id).get();
+		List<CarModel>carList = carService.sortDrHarga(id);
+		
+		model.addAttribute("list", carList);
 		model.addAttribute("dealer", archive);
 		return "view-dealer";
 	}
 	
 	
 	@RequestMapping(value = "/dealer/delete/{dealerId}", method = RequestMethod.GET)
-	private String deleteDealer(
-			@PathVariable(value = "dealerId") Long dealerId
-			) {
+	private String deleteDealer(@PathVariable(value = "dealerId") Long dealerId) {
 		dealerService.deleteDealer(dealerId);
-		return "deleteCar";
+		return "delete";
 	}
 	
 	@RequestMapping(value = "/dealer/view/all", method = RequestMethod.GET)
@@ -70,4 +74,21 @@ public class DealerController {
 		
 		return "view-all";
 	}
+	
+	@RequestMapping(value = "/dealer/update/{dealerId}", method = RequestMethod.GET)
+	private String update(@PathVariable(value = "dealerId") Long dealerId, Model model) {
+		DealerModel archive = dealerService.getDealerDetailById(dealerId).get();
+		
+		model.addAttribute("dealer", archive);
+		return "update-dealer";
+	}
+		
+		
+	@RequestMapping(value = "/dealer/update/{dealerId}", method = RequestMethod.POST)
+	private String updateDealerSubmit(@PathVariable(value = "dealerId") Long dealerId, @ModelAttribute DealerModel dealer) {
+		dealerService.dealerUpdate(dealer, dealerId);
+		return "update";
+		
+	}
+	
 }

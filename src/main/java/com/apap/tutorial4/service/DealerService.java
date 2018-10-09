@@ -15,7 +15,7 @@ public interface DealerService {
 	
 	void addDealer(DealerModel dealer);
 	void deleteDealer(long dealerId);
-
+	void dealerUpdate(DealerModel dealer, Long dealerId);
 	DealerDb viewAllDealer();
 
 }
