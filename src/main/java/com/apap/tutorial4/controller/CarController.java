@@ -41,22 +41,7 @@ public class CarController {
 		return "addCar";
 	}*/
 	
-	@RequestMapping(value = "/car/add/{dealerId}", method = RequestMethod.GET)
-	private String add(@PathVariable(value = "dealerId") Long dealerId, Model model) {
-		DealerModel dealer  = dealerService.getDealerDetailById(dealerId).get();
-		ArrayList<CarModel> list = new ArrayList<CarModel>();
-		list.add(new CarModel());
-		dealer.setListCar(list);
-		
-		model.addAttribute("dealer", dealer);
-		return "addCar";
-	}
 	
-	@RequestMapping(value = "/car/add", method = RequestMethod.POST)
-	private String addCarSubmit(@ModelAttribute CarModel car) {
-		carService.addCar(car);
-		return "add";
-	}
 	
 	@RequestMapping(value = "/car/delete", method = RequestMethod.POST)
 	private String deleteCar (@ModelAttribute DealerModel dealer, Model model) {
@@ -81,6 +66,27 @@ public class CarController {
 		carService.carUpdate(car, carId);
 		return "update";
 		
+	}
+	
+	@RequestMapping(value = "/car/add/{dealerId}", method = RequestMethod.GET)
+	private String add(@PathVariable(value = "dealerId") Long dealerId, Model model) {
+		DealerModel dealer  = dealerService.getDealerDetailById(dealerId).get();
+		ArrayList<CarModel> list = new ArrayList<CarModel>();
+		list.add(new CarModel());
+		dealer.setListCar(list);
+		
+		model.addAttribute("dealer", dealer);
+		return "addCar";
+	}
+	
+	@RequestMapping(value = "/car/add/{dealerId}", method = RequestMethod.POST, params= {"save"})
+	private String addCarSubmit(@ModelAttribute DealerModel dealer) {
+		DealerModel dealerNow = dealerService.getDealerDetailById(dealer.getId()).get();
+		for(CarModel car:dealer.getListCar()) {
+			car.setDealer(dealerNow);
+			carService.addCar(car);
+		}
+		return "add";
 	}
 	
 	@RequestMapping(value="/car/add/{dealerId}", method = RequestMethod.POST, params= {"addRow"})
